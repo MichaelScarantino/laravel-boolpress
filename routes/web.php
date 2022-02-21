@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Psy\Command\WhereamiCommand;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
