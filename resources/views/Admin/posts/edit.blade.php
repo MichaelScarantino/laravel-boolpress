@@ -29,7 +29,27 @@
                         <option value="{{ $category->id }}" {{ old('category_id', $post->category_id) == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                     @endforeach
                 </select>
-              </div>
+            </div>
+
+            <div class="mb-3">
+
+                <h5>Tags</h5>
+
+                @foreach ($tags as $tag)
+                    <div class="form-check">
+                        @if ($errors->any())
+                            <input {{ in_array($tag->id, old('tags', [])) ? 'checked' : '' }} class="form-check-input" type="checkbox" name="tags[]" value="{{ $tag->id }}" id="tag-{{ $tag->id }}">
+                        @else
+                            <input {{ $post->tags->contains($tag) ? 'checked' : '' }} class="form-check-input" type="checkbox" name="tags[]" value="{{ $tag->id }}" id="tag-{{ $tag->id }}">
+                        @endif
+                        <label class="form-check-label" for="tag-{{ $tag->id }}">
+                            {{ $tag->name }}
+                        </label>
+                    </div>
+                @endforeach
+
+            </div>
+
             <div class="mb-3">
                 <label for="content" class="form-label">Contenuto</label>
                 <textarea name="content" class="form-control" id="content" cols="30" rows="10">{{ old('content', $post->content) }}</textarea>

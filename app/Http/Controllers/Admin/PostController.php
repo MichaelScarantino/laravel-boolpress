@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Post;
 use App\Category;
 use App\Tag;
-use Illuminate\Support\Str;
 class PostController extends Controller
 {
     /**
@@ -45,7 +44,7 @@ class PostController extends Controller
         $request->validate($this->getValidation());
         $new_post = new Post();
         $new_post->fill($form_data);
-        $new_post->slug = $this->getUniqueSlug($form_data['title']);
+        $new_post->slug = Post::getUniqueSlug($form_data['title']);
         $new_post->save();
 
         if(isset($form_data['tags'])) {
@@ -79,7 +78,8 @@ class PostController extends Controller
     {   
         $post = Post::findOrFail($id);
         $categories = Category::all();
-        return view('admin.posts.edit', compact('post', 'categories'));
+        $tags = Tag::all();
+        return view('admin.posts.edit', compact('post', 'categories', 'tags'));
     }
 
     /**
@@ -96,9 +96,15 @@ class PostController extends Controller
         $post = Post::findOrFail($id);
 
         if($form_data['title'] != $post->title) {
-            $form_data['slug'] = $this->getUniqueSlug($form_data['title']);
+            $form_data['slug'] = Post::getUniqueSlug($form_data['title']);
         }
         $post->update($form_data);
+
+        if(isset($form_data['tags'])) {
+            $post->tags()->sync($form_data['tags']);
+        } else {
+            $post->tags()->sync([]);
+        }
         return redirect()->route('admin.posts.show', ['post' => $post->id]);
     }
 
@@ -111,6 +117,7 @@ class PostController extends Controller
     public function destroy($id)
     {
         $post = Post::findOrFail($id);
+        $post->tags()->sync([]);
         $post->delete();
         return redirect()->route('admin.posts.index');
     }
@@ -122,18 +129,5 @@ class PostController extends Controller
             'category_id' => 'exists:categories,id|nullable',
             'tags' => 'exists:tags,id'
         ];
-    }
-
-    protected function getUniqueSlug($title) {
-        $slug = Str::slug($title);
-        $slug_base = $slug;
-        $post_found = Post::where('slug', '=', $slug)->first();
-        $counter = 1;
-        while($post_found) {
-            $slug = $slug_base . '-' . $counter;
-            $post_found = Post::where('slug', '=', $slug)->first();
-            $counter++;
-        }
-        return $slug;
     }
 }

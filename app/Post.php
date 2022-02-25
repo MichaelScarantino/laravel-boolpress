@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Support\Str;
 class Post extends Model
 {
     protected $fillable = [
@@ -20,4 +20,18 @@ class Post extends Model
     public function tags() {
         return $this->belongsToMany('App\Tag');
     }
+    
+    public static function getUniqueSlug($title) {
+        $slug = Str::slug($title);
+        $slug_base = $slug;
+        $post_found = Post::where('slug', '=', $slug)->first();
+        $counter = 1;
+        while($post_found) {
+            $slug = $slug_base . '-' . $counter;
+            $post_found = Post::where('slug', '=', $slug)->first();
+            $counter++;
+        }
+        return $slug;
+    }
+
 }
