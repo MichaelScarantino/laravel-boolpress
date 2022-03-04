@@ -17,10 +17,9 @@
                             <li class="list-group-item">A second item</li>
                             <li class="list-group-item">A third item</li>
                         </ul> -->
-                        <!-- <div class="card-body">
-                            <a href="#" class="card-link">Card link</a>
-                            <a href="#" class="card-link">Another link</a>
-                        </div> -->
+                        <div class="card-body">
+                            <router-link :to="{ name: 'post-details', params: { slug: post.slug } }">Leggi articolo</router-link>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -72,7 +71,7 @@ export default {
         }
     },
     created: function() {
-        this.getPosts();
+        this.getPosts(1);
     }
 }
 </script>
