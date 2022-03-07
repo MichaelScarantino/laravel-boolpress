@@ -12,6 +12,15 @@
                 Nessuno
             @endforelse
         </div>
+
+        @if ($post->cover)
+
+            <div>
+                <img src="{{ asset('storage/' . $post->cover) }}" alt="{{ $post->title }}">
+            </div>
+            
+        @endif
+
         <div>{{ $post->content }}</div>
         <a href="{{ route('admin.posts.edit', ['post' => $post->id]) }}" class="btn btn-primary mt-3 mb-2">Modifica post</a>
         <form action="{{ route('admin.posts.destroy', ['post' => $post->id]) }}" method="post">

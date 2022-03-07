@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Post;
 use App\Category;
 use App\Tag;
+use Illuminate\Contracts\Cache\Store;
+use Illuminate\Support\Facades\Storage;
 class PostController extends Controller
 {
     /**
@@ -45,8 +47,15 @@ class PostController extends Controller
         $new_post = new Post();
         $new_post->fill($form_data);
         $new_post->slug = Post::getUniqueSlug($form_data['title']);
-        $new_post->save();
+        
 
+        if(isset($form_data['image'])) {
+            $img_path = Storage::put('post_covers', $form_data['image']);
+            $new_post->cover = $img_path;
+        }
+
+        $new_post->save();
+        
         if(isset($form_data['tags'])) {
             $new_post->tags()->sync($form_data['tags']);
         }
@@ -98,6 +107,17 @@ class PostController extends Controller
         if($form_data['title'] != $post->title) {
             $form_data['slug'] = Post::getUniqueSlug($form_data['title']);
         }
+
+        if(isset($form_data['image'])) {
+
+            if ($post->cover) {
+                Storage::delete($post->cover);
+            }
+
+            $img_path = Storage::put('post_covers', $form_data['image']);
+            $form_data['cover'] = $img_path;
+        }
+
         $post->update($form_data);
 
         if(isset($form_data['tags'])) {
@@ -118,6 +138,9 @@ class PostController extends Controller
     {
         $post = Post::findOrFail($id);
         $post->tags()->sync([]);
+        if($post->cover) {
+            Storage::delete($post->cover);
+        }
         $post->delete();
         return redirect()->route('admin.posts.index');
     }
@@ -127,7 +150,8 @@ class PostController extends Controller
             'title' => 'required|max:255',
             'content' => 'required|max:60000',
             'category_id' => 'exists:categories,id|nullable',
-            'tags' => 'exists:tags,id'
+            'tags' => 'exists:tags,id',
+            'image' => 'image|max:512'
         ];
     }
 }

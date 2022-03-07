@@ -14,7 +14,7 @@
             </div>
         @endif
 
-        <form action="{{ route('admin.posts.store') }}" method="post">
+        <form action="{{ route('admin.posts.store') }}" method="post" enctype="multipart/form-data">
             @csrf
             @method('POST')
             <div class="mb-3">
@@ -49,6 +49,12 @@
                 <label for="content" class="form-label">Contenuto</label>
                 <textarea name="content" class="form-control" id="content" cols="30" rows="10">{{ old('content') }}</textarea>
             </div>
+
+            <div class="mb-3">
+                <label for="image" class="form-label">Immagine</label>
+                <input type="file" name="image" id="image">
+            </div>
+
             <button type="submit" class="btn btn-primary">Submit</button>
           </form>
     </section>
