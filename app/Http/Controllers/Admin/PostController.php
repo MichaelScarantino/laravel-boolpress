@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Post;
 use App\Category;
 use App\Tag;
-use Illuminate\Contracts\Cache\Store;
 use Illuminate\Support\Facades\Storage;
 class PostController extends Controller
 {

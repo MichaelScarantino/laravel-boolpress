@@ -7,6 +7,9 @@
                 {{ tag.name }}
             </div>
         </div>
+
+        <img v-if="post.cover" :src="post.cover" class="card-img-top my-2" alt="post.title">
+
         <div>{{ post.content }}</div>
     </div>
 </template>
