@@ -7,6 +7,7 @@ import Home from './pages/Home.vue';
 import About from './pages/About.vue';
 import Blog from './pages/Blog.vue';
 import PostDetails from './pages/PostDetails.vue';
+import Contacts from './pages/Contacts.vue';
 import NotFound from './pages/NotFound.vue';
 
 
@@ -32,6 +33,11 @@ const router = new VueRouter({
             path: "/blog/:slug",
             name: "post-details",
             component: PostDetails
+        },
+        {
+            path: "/contacts",
+            name: "contacts",
+            component: Contacts
         },
         {
             path: "/*",
